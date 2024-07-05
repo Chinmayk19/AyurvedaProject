@@ -13,14 +13,14 @@ const Page = () => {
   const { data: session, status } = useSession();
   const userEmail = session?.user?.email;
 
-  const { data, error } = useSWR('http://localhost:4000/allproducts', fetcher);
+  const { data, error } = useSWR('https://ayurvedaproject-tepq.onrender.com/allproducts', fetcher);
   const handleAddToCart = async (productname) => {
     if (!session) {
       alert("You need to be logged in to add items to the cart.");
       return;
     }
     try {
-      const response = await fetch('http://localhost:4000/addtocart', {
+      const response = await fetch('https://ayurvedaproject-tepq.onrender.com/addtocart', {
         method: 'POST',
         headers: {
           Accept:"application/json",

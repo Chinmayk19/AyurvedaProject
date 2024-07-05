@@ -7,7 +7,7 @@ import Navbar from '../Components/Navbar';
 const fetcher = url => fetch(url).then(res => res.json());
 
 const Page = () => {
-  const { data, error } = useSWR('http://localhost:4000/allproducts', fetcher);
+  const { data, error } = useSWR('https://ayurvedaproject-tepq.onrender.com/allproducts', fetcher);
 
   return (
     <div>
