@@ -48,17 +48,12 @@ const Page = () => {
       alert("An error occurred while adding item to cart.");
     }
   };
-
-  if (status === "loading") {
-    return <div>Loading...</div>;
-  }
-
   return (
     <>
       <Navbar />
       <div className="p-4">
   {error && <div className="text-red-500">Product Not found.</div>}
-  {!data && <div>Loading...</div>}
+  {!data && <div className="text-center">Loading...</div>}
   {data && data.filter(product => path.includes(product._id)).map(product => (
     <div key={product._id} className="flex flex-col md:flex-row justify-center border border-gray-300 p-4 rounded-lg mb-4 max-w-full md:max-w-3xl m-auto">
       <img src={product.productImage} alt={product.productName} className="w-full md:w-1/3 h-80 object-cover rounded-md" />

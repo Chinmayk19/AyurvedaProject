@@ -11,10 +11,6 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
-  cart:{
-    type:Array,
-    default:[],
-  }
 });
 
 const AyurvedaUser = mongoose.models.AyurvedaUser || mongoose.model("AyurvedaUser", userSchema);

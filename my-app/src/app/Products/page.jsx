@@ -14,7 +14,7 @@ const Page = () => {
       <Navbar />
       <h2 className='font-bold ml-10 mt-5 mb-5 text-2xl md:text-4xl'>Products</h2>
       {error && <div>Error fetching data at this moment</div>}
-      {!data && <div>Loading...</div>}
+      {!data && <div className='text-center'>Loading...</div>}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 px-10 py-6">
         {data && data.map(product => (
           <div key={product._id} className="w-full">
