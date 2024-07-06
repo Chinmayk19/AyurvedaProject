@@ -77,53 +77,63 @@ app.get("/allusers", async (req, res) => {
 });
 app.get("/getcart", async (req, res) => {
   try {
-    const cart = await Cart.find({});
-    res.status(200).json(cart);
+      const cart = await Cart.find({});
+      res.status(200).json(cart);
   } catch (error) {
-    console.error("Internal Server Error:", error);
-    res.status(500).json({ message: "Internal Server Error" });
+      console.error("Internal Server Error:", error);
+      res.status(500).json({ message: "Internal Server Error" });
   }
 });
-app.post("/removefromcart", async (req, res) => {
-  const { email, productId } = req.body;
-  console.log("Request Body:", req.body);
-
+app.post("/addtocart",async (req,res)=>{
+  const email=req.body.email;
+  const productid=req.body.productId;
   try {
-    if (!email) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Please provide an email" });
+    if(!email){
+      res.json({success:false,message:"Please login to add to cart"})
     }
-    if (!productId) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Please provide a product ID" });
+    if(!productid){
+      res.json({success:false,message:"Unable to find product"})
     }
-    const cartItems = await Cart.find({});
-
-    const cartItem = cartItems.find(
-      (item) => item.email === email && item.ProductId === productId
-    );
-    console.log("Found Cart Item:", cartItem);
-
-    if (!cartItem) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Item not found in cart" });
-    }
-    await Cart.deleteOne({ _id: cartItem._id });
-
-    return res
-      .status(200)
-      .json({ success: true, message: "Item removed from cart" });
+    const cart=new Cart({
+      email:email,
+      ProductId:productid,
+    })
+    cart.save();
+    res.json({success:true,message:"Added to cart"});
   } catch (error) {
-    console.error("Internal Server Error:", error);
-    return res
-      .status(500)
-      .json({ success: false, message: "Internal Server Error" });
+    res.json({success:false,message:"Internal server error"});
   }
+})
+  
+  app.post("/removefromcart", async (req, res) => {
+    const { email, productId } = req.body;
+    console.log("Request Body:", req.body);
+
+    try {
+        if (!email) {
+            return res.status(400).json({ success: false, message: "Please provide an email" });
+        }
+        if (!productId) {
+            return res.status(400).json({ success: false, message: "Please provide a product ID" });
+        }
+        const cartItems = await Cart.find({});
+  
+        const cartItem = cartItems.find(item => item.email === email && item.ProductId === productId);
+        console.log("Found Cart Item:", cartItem);
+
+        if (!cartItem) {
+            return res.status(404).json({ success: false, message: "Item not found in cart" });
+        }
+        await Cart.deleteOne({ _id: cartItem._id });
+
+        return res.status(200).json({ success: true, message: "Item removed from cart" });
+    } catch (error) {
+        console.error("Internal Server Error:", error);
+        return res.status(500).json({ success: false, message: "Internal Server Error" });
+    }
 });
 
+  
 app.listen(port, (error) => {
   if (!error) {
     console.log("Server running on port " + port);
