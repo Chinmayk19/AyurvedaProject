@@ -37,11 +37,10 @@ const Page = () => {
       };
 
       const filterUserCartItems = (cartData) => {
-          // Filter items for the current user
+          //  Filtering items for the current user
           const userCart = cartData.filter(item => item.email === userEmail);
           setUserCartItems(userCart);
 
-          // Check if the specific product is in the user's cart
           const productInCart = userCart.some(item => item.ProductId === params.productid);
           setIsProductInCart(productInCart);
       };
@@ -74,7 +73,6 @@ const Page = () => {
         if (response.ok) {
             alert("Added to cart");
 
-            // Update the cart state to include the new item
             const newCartItem = await response.json();
             setCart(prevCart => [...prevCart, newCartItem]);
             setUserCartItems(prevUserCartItems => [...prevUserCartItems, newCartItem]);
@@ -113,8 +111,6 @@ const handleRemoveFromCart = async (productId) => {
       console.log(response);
       if (response.ok) {
           alert("Removed from cart");
-
-          // Update the cart state to remove the item
           setCart(prevCart => prevCart.filter(item => item.ProductId !== productId));
           setUserCartItems(prevUserCartItems => prevUserCartItems.filter(item => item.ProductId !== productId));
           setIsProductInCart(false);
