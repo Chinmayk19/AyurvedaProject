@@ -17,70 +17,117 @@ const Page = () => {
     fetcher
   );
   const [cart, setCart] = useState([]);
-  const [saved, setSaved] = useState(false);
+  const [userCartItems, setUserCartItems] = useState([]);
+  const [isProductInCart, setIsProductInCart] = useState(false);
+
+  useEffect(() => {
+      const fetchCartItems = async () => {
+          try {
+              const response = await fetch("http://localhost:4000/getcart");
+              if (response.ok) {
+                  const cartData = await response.json();
+                  setCart(cartData);
+                  filterUserCartItems(cartData);
+              } else {
+                  console.error("Failed to fetch cart items");
+              }
+          } catch (error) {
+              console.error("Error fetching cart items:", error);
+          }
+      };
+
+      const filterUserCartItems = (cartData) => {
+          // Filter items for the current user
+          const userCart = cartData.filter(item => item.email === userEmail);
+          setUserCartItems(userCart);
+
+          // Check if the specific product is in the user's cart
+          const productInCart = userCart.some(item => item.ProductId === params.productid);
+          setIsProductInCart(productInCart);
+      };
+
+      fetchCartItems();
+  }, [params.productid, userEmail]);
+
+
+
   const handleAddToCart = async (productId) => {
     if (!session) {
-      alert("You need to be logged in to add items to the cart.");
-      return;
+        alert("You need to be logged in to add items to the cart.");
+        return;
     }
     try {
-      const response = await fetch(
-        "https://ayurvedaproject-tepq.onrender.com/addtocart",
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email: userEmail,
-            productId,
-          }),
-        }
-      );
-      if (response.ok) {
-        alert("Added to cart");
-        setSaved(true)
-      } else {
-        alert("Failed to add to cart");
-      }
-    } catch (error) {
-      console.error("Error adding to cart:", error);
-      alert("An error occurred while adding the item to the cart.");
-    }
-  };
+        const response = await fetch(
+            "https://ayurvedaproject-tepq.onrender.com/addtocart",
+            {
+                method: "POST",
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    email: userEmail,
+                    productId,
+                }),
+            }
+        );
+        if (response.ok) {
+            alert("Added to cart");
 
-  const handleRemoveFromCart = async (productId) => {
-    if (!session) {
+            // Update the cart state to include the new item
+            const newCartItem = await response.json();
+            setCart(prevCart => [...prevCart, newCartItem]);
+            setUserCartItems(prevUserCartItems => [...prevUserCartItems, newCartItem]);
+            setIsProductInCart(true);
+        } else {
+            const errorData = await response.json();
+            alert(`Failed to add to cart: ${errorData.message}`);
+        }
+    } catch (error) {
+        console.error("Error adding to cart:", error);
+        alert("An error occurred while adding the item to the cart.");
+    }
+};
+
+
+const handleRemoveFromCart = async (productId) => {
+  if (!session) {
       alert("You need to be logged in to remove items from the cart.");
       return;
-    }
-    try {
+  }
+  try {
       const response = await fetch(
-        "https://ayurvedaproject-tepq.onrender.com/removefromcart",
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email: userEmail,
-            productId,
-          }),
-        }
+          "http://localhost:4000/removefromcart",
+          {
+              method: "POST",
+              headers: {
+                  Accept: "application/json",
+                  "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                  email: userEmail,
+                  productId,
+              }),
+          }
       );
+      console.log(response);
       if (response.ok) {
-        alert("Removed from cart");
-        setSaved(false);
+          alert("Removed from cart");
+
+          // Update the cart state to remove the item
+          setCart(prevCart => prevCart.filter(item => item.ProductId !== productId));
+          setUserCartItems(prevUserCartItems => prevUserCartItems.filter(item => item.ProductId !== productId));
+          setIsProductInCart(false);
       } else {
-        alert("Failed to remove from cart");
+          const errorData = await response.json();
+          alert(`Failed to remove from cart: ${errorData.message}`);
       }
-    } catch (error) {
+  } catch (error) {
       console.error("Error removing from cart:", error);
       alert("An error occurred while removing the item from the cart.");
-    }
-  };
+  }
+};
+
 
   return (
     <>
@@ -95,7 +142,7 @@ const Page = () => {
               <h1 className="text-xl md:text-2xl font-bold">{product.productName}</h1>
               <p className="mt-2 text-sm md:text-base">{product.productInfo}</p>
               <p className="mt-2 text-lg font-semibold">{product.productPrice}</p>
-              {saved ? (
+              {isProductInCart ? (
                 <button
                   className="mt-4 bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600 w-full md:w-auto"
                   onClick={() => handleRemoveFromCart(product._id)}

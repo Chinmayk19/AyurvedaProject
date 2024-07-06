@@ -8,7 +8,6 @@ import { signIn, signOut, useSession} from 'next-auth/react';
 const Navbar = () => {
   const path = usePathname();
   const status=useSession();
-  console.log(status);
   return (
     <nav className="bg-green-900 p-4">
       <div className="max-w-7xl mx-auto">
