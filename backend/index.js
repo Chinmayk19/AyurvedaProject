@@ -66,6 +66,18 @@ const Cart = mongoose.model("Cart", {
     type: String,
     reuired: true,
   },
+  productname:{
+    type:String,
+    required:true,
+  },
+  productimg:{
+    type:String,
+    required:true,
+  },
+  productprice:{
+    type:String,
+    required:true,
+  }
 });
 app.get("/allproducts", async (req, res) => {
   let products = await Product.find({});
@@ -94,9 +106,13 @@ app.post("/addtocart",async (req,res)=>{
     if(!productid){
       res.json({success:false,message:"Unable to find product"})
     }
+    const product= await Product.findOne({_id:productid});
     const cart=new Cart({
       email:email,
+      productname:product.productName,
       ProductId:productid,
+      productimg:product.productImage,
+      productprice:product.productPrice,
     })
     cart.save();
     res.json({success:true,message:"Added to cart"});
