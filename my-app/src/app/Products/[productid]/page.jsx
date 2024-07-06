@@ -23,7 +23,7 @@ const Page = () => {
   useEffect(() => {
       const fetchCartItems = async () => {
           try {
-              const response = await fetch("http://localhost:4000/getcart");
+              const response = await fetch("https://ayurvedaproject-tepq.onrender.com/getcart");
               if (response.ok) {
                   const cartData = await response.json();
                   setCart(cartData);
@@ -57,7 +57,7 @@ const Page = () => {
     }
     try {
         const response = await fetch(
-            "http://localhost:4000/addtocart",
+            "https://ayurvedaproject-tepq.onrender.com/addtocart",
             {
                 method: "POST",
                 headers: {
@@ -95,7 +95,7 @@ const handleRemoveFromCart = async (productId) => {
   }
   try {
       const response = await fetch(
-          "http://localhost:4000/removefromcart",
+          "https://ayurvedaproject-tepq.onrender.com/removefromcart",
           {
               method: "POST",
               headers: {
