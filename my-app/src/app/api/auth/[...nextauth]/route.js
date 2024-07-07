@@ -1,6 +1,6 @@
 import NextAuth from "next-auth/next";
 import GoogleProvider from "next-auth/providers/google";
-import { connectMongoDB } from "../../../../../lib/mongodb"; // Ensure this is correctly imported
+import { connectMongoDB } from "../../../../../lib/mongodb";
 import AyurvedaUser from "../../../../../models/user";
 
 const authOptions = {
@@ -15,7 +15,7 @@ const authOptions = {
       if (account.provider === "google") {
         const { name, email } = user;
         try {
-          await connectMongoDB(); // Ensure MongoDB connection is established
+          await connectMongoDB();
           const existingUser = await AyurvedaUser.findOne({ email });
           if (!existingUser) {
             await AyurvedaUser.create({ email, name });
