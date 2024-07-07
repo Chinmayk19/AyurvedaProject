@@ -2,9 +2,9 @@
 import React from 'react';
 import useSWR from 'swr';
 import { useSession } from "next-auth/react";
-import CartBox from '../Components/CartBox/index'; // Adjust the import path as necessary
+import CartBox from '../Components/CartBox/index'; 
 
-// Define a fetcher function for SWR
+
 const fetcher = url => fetch(url).then(res => res.json());
 
 const Page = () => {

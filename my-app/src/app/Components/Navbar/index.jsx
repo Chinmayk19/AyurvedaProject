@@ -3,7 +3,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
 import { signIn, signOut, useSession } from "next-auth/react";
-import { FaShoppingCart } from "react-icons/fa"; // Assuming you want to use Font Awesome icons for the shopping cart
+import { FaShoppingCart } from "react-icons/fa";
 
 const Navbar = () => {
   const path = usePathname();
