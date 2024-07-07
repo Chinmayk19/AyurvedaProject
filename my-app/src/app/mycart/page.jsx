@@ -11,19 +11,18 @@ const Page = () => {
   const { data: session, status } = useSession();
   const userEmail = session?.user?.email;
 
-  // Use SWR to fetch cart items
   const { data: cartItems, error } = useSWR('https://ayurvedaproject-tepq.onrender.com/getcart', fetcher);
 
   if (!userEmail) {
-    return <div>Please log in to view your cart items.</div>;
+    return <div className='text-center'>Please log in to view your cart items.</div>;
   }
 
   if (error) {
-    return <div>Failed to load cart items.</div>;
+    return <div className='text-center'>Failed to load cart items.</div>;
   }
 
   if (!cartItems) {
-    return <div>Loading...</div>;
+    return <div className='text-center'>Loading...</div>;
   }
   const userCartItems = cartItems.filter(item => item.email === userEmail);
   return (
